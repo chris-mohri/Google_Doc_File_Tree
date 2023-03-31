@@ -1,0 +1,162 @@
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <base target="_top">
+  </head>
+  <body>
+    <div id="fileTree"></div>
+    <script>
+      google.script.run.withSuccessHandler(function(data) {
+        var fileTree = document.getElementById('fileTree');
+        fileTree.innerHTML = buildTree(data);
+      }).getFolderData();
+
+
+      function buildTree(data) {
+        var output = '<ul>';
+        for (var i = 0; i < data.length; i++) {
+          var node = data[i];
+          var isFolder = node.children !== undefined;
+          output += '<li>';
+          if (isFolder) {
+            output += '<div class="toggle-btn" onclick="toggleFolder(this)"><span class="arrow expanded"></span></div>';
+          } else {
+            output += '<div class="toggle-btn"></div>';
+          }
+          if (node.type==='file') {
+            output += '<a href="' + node.url + '"target="_blank">' + node.name + '</a>';
+            //output += '<a href="#" onclick="openLink(\'' + node.url + '\')">' + node.name + '</a>';
+          } else {
+            output += '<span class="folder-name" onclick="goToPage(\'' + node.url+ '\')">' + node.name + '</span>';
+            output += '<button class="new-file-btn" onclick="createFile(\'' + node.id + '\')">+</button>';
+            output += buildTree(node.children);
+          }
+          output += '</li>';
+        }
+        output += '</ul>';
+        return output;
+      }
+
+      /*
+      function openLink(url) {
+        google.script.run.withSuccessHandler(function() {
+          window.open(url, '_top');
+        }).withFailureHandler(function() {
+          console.log('Error opening link');
+        }).openLink(url);
+      }
+      */
+
+      function goToPage(url)
+      {
+        var win = window.open(url, '_blank');
+        win.focus(); 
+      }
+
+      function goToPageInNewTab(url)
+      {
+        var win = window.open(url);
+        win.focus(); 
+      }
+      
+
+      function onSuccess(name){
+        if (name===''){
+          //alert('Missing file name. Failed to create new file. ')
+        }
+        else{
+          //alert('File created!');
+          //rebuild the tree
+          google.script.run.withSuccessHandler(function(data) {
+            var fileTree = document.getElementById('fileTree');
+            fileTree.innerHTML = buildTree(data);
+          }).getFolderData();
+
+        }
+      }
+
+      function createFile(parentFolderId) {
+        google.script.run.withSuccessHandler(onSuccess).createFile(parentFolderId);
+
+      }
+
+      function toggleFolder(node) {
+        var parent = node.parentNode;
+        var children = parent.getElementsByTagName('ul')[0];
+        var arrow = parent.getElementsByClassName('arrow')[0];
+        if (children.style.display == 'none') {
+          children.style.display = 'block';
+          arrow.classList.add('expanded');
+        } else {
+          children.style.display = 'none';
+          arrow.classList.remove('expanded');
+        }
+      }
+
+
+
+
+    </script>
+    <style>
+
+      a:link    { text-decoration: none;}
+      a:visited { text-decoration: none;}
+      a:hover   { text-decoration: none;}
+      a:active  { text-decoration: none;}
+
+      ul {
+        caret-color: transparent;
+        list-style-type: none;
+        margin: 0;
+        padding: 0;
+      }
+      li {
+        caret-color: transparent;
+        margin-left: 20px;
+        position: relative;
+      }
+      .toggle-btn {
+        caret-color: transparent;
+        position: absolute;
+        left: -20px;
+        top: 0;
+        width: 20px;
+        height: 20px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        cursor: pointer;
+      }
+      .arrow {
+        caret-color: transparent;
+        width: 0;
+        height: 0;
+        border-top: 5px solid transparent;
+        border-bottom: 5px solid transparent;
+        border-left: 5px solid #333;
+        transition: all 0.3s;
+      }
+      .arrow.expanded {
+        caret-color: transparent;
+        //rotates the arrow
+        transform: rotate(90deg);
+        border-left: 5px solid #333;
+        border-top: 5px solid transparent;
+      }
+      .folder-name {
+        caret-color: transparent;
+        margin-right: 5px;
+        font-weight: bold;
+        cursor: pointer;
+      }
+    </style>
+  </body>
+</html>
+
+
+
+
+
+
+
