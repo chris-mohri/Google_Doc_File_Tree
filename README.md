@@ -1,5 +1,5 @@
 # Google_Doc_File_Tree
-Shows a file-tree of the FILE_EXPANDER folder in your Google Drive. Let's you easily add files and navigate the folder.
+This program seeks to improve workflow of creative writing by providing a pleasant interface for different folders and text documents. You can quickly open your files from the hyperlinks in the file-tree, expand/collapse folders if the interface gets too cluttered, and add new files directly into a chosen folder with one click.
 
 ![Screenshot](example_1.png)
 
