@@ -7,11 +7,16 @@
   <body>
     <div id="fileTree"></div>
     <script>
-      google.script.run.withSuccessHandler(function(data) {
-        var fileTree = document.getElementById('fileTree');
-        fileTree.innerHTML = buildTree(data);
-      }).getFolderData();
 
+      function build()
+      {
+        google.script.run.withSuccessHandler(function(data) {
+          var fileTree = document.getElementById('fileTree');
+          fileTree.innerHTML = buildTree(data);
+        }).getFolderData();
+      }
+
+      build();
 
       function buildTree(data) {
         var output = '<ul>';
@@ -26,7 +31,6 @@
           }
           if (node.type==='file') {
             output += '<a href="' + node.url + '"target="_blank">' + node.name + '</a>';
-            //output += '<a href="#" onclick="openLink(\'' + node.url + '\')">' + node.name + '</a>';
           } else {
             output += '<span class="folder-name" onclick="goToPage(\'' + node.url+ '\')">' + node.name + '</span>';
             output += '<button class="new-file-btn" onclick="createFile(\'' + node.id + '\')">+</button>';
@@ -37,16 +41,6 @@
         output += '</ul>';
         return output;
       }
-
-      /*
-      function openLink(url) {
-        google.script.run.withSuccessHandler(function() {
-          window.open(url, '_top');
-        }).withFailureHandler(function() {
-          console.log('Error opening link');
-        }).openLink(url);
-      }
-      */
 
       function goToPage(url)
       {
@@ -61,17 +55,13 @@
       }
       
 
-      function onSuccess(name){
-        if (name===''){
-          //alert('Missing file name. Failed to create new file. ')
+      function onSuccess(boolean){
+        if (boolean===false){
+          alert('something went wrong :(');
         }
         else{
-          //alert('File created!');
-          //rebuild the tree
-          google.script.run.withSuccessHandler(function(data) {
-            var fileTree = document.getElementById('fileTree');
-            fileTree.innerHTML = buildTree(data);
-          }).getFolderData();
+          
+          build();
 
         }
       }
