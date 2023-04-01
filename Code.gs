@@ -17,7 +17,7 @@ function showSidebar() {
 function createFile(parentFolderId)
 {
   var fileName = DocumentApp.getUi().prompt('Enter file name:').getResponseText();
-  if (fileName==='') {return fileName;}
+  if (fileName==='') {return false;}
 
   var file = {
     title: fileName,
@@ -26,11 +26,7 @@ function createFile(parentFolderId)
   };
   var createdFile = Drive.Files.insert(file);
 
-  //var url = 'https://docs.google.com/document/d/' + file.id + '/edit';
-  //var win = window.open(url, '_blank');
-  //win.focus();  
-
-  return fileName;
+  return true;
 }
 
 
@@ -44,8 +40,6 @@ function getFolderTree(folder) {
   var subfolders = folder.getFolders();
   while (subfolders.hasNext()) {
     var subfolder = subfolders.next();
-    //output.push({name: subfolder.getName(), children: getFolderTree(subfolder), id: subfolder.getId()});
-
     output.push({type:'folder', name: subfolder.getName(), children: getFolderTree(subfolder), id: subfolder.getId(), url: subfolder.getUrl()});
   }
   return output;
